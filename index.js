@@ -5,7 +5,7 @@ const babylon = require('babylon');
 const errorHandlerName = 'ReactRenderTryCatchErrorHandler';
 const originalRenderMethodName = '__originalRenderMethod__';
 
-const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return ${ errorHandlerName }(e)}`;
+const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return ${ errorHandlerName }(e, this.constructor.name)}`;
 const tryCatchRenderAST = babylon.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
 
 
