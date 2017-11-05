@@ -1,20 +1,29 @@
 {
-  "name": "babel-plugin-transform-react-render-try-catch",
+  "name": "babel-plugin-transform-react-ssr-try-catch",
   "version": "1.0.1",
-  "description": "",
+  "description": "Wraps render() method in React.Component with try-catch statement",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "eslint": "eslint .",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YandexClassifieds/babel-plugin-transform-react-render-try-catch.git"
+    "url": "git+https://github.com/YandexClassifieds/babel-plugin-transform-react-ssr-try-catch.git"
   },
-  "author": "Aleksei Androsov",
-  "license": "Yandex",
+  "author": "Aleksei Androsov <aandrosov@yandex-team.ru>",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/YandexClassifieds/babel-plugin-transform-react-render-try-catch/issues"
+    "url": "https://github.com/YandexClassifieds/babel-plugin-transform-react-ssr-try-catch/issues"
   },
-  "homepage": "https://github.com/YandexClassifieds/babel-plugin-transform-react-render-try-catch#readme",
-  "private": true
+  "homepage": "https://github.com/YandexClassifieds/babel-plugin-transform-react-ssr-try-catch#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "eslint": "^4.10.0",
+    "mocha": "^4.0.1"
+  },
+  "engine": {
+    "node": ">=6"
+  }
 }
