@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/doochik/babel-plugin-transform-react-ssr-try-catch.svg?branch=master)](https://travis-ci.org/doochik/babel-plugin-transform-react-ssr-try-catch)
 
-# babel-plugin-transform-react-ssr-try-catch
+# @doochik/babel-plugin-transform-react-ssr-try-catch
 
 Babel plugin to wrap render() method in React.Component with try-catch statement.
 
@@ -44,9 +44,15 @@ Actually, this is temporary solution until React doesn't support error handling 
 
 ## Installation
 
+```sh
+npm install --save-dev @doochik/babel-plugin-transform-react-ssr-try-catch
+```
+
 ## Usage
 
 **You should enable this plugin only for server build. Use React 16 error boundaries from cient build.**
+
+**.babelrc**
 
 ```json
 {
@@ -57,6 +63,13 @@ Actually, this is temporary solution until React doesn't support error handling 
     ]
 }
 ```
+
+## Options
+
+### `errorHandler`
+
+Path to your errorHandler module.
+This is simple function with two arguments `(error, componentName)`
 
 ```js
 // SSRErrorHandler.js
