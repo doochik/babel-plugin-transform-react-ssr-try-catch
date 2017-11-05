@@ -2,7 +2,7 @@
   "name": "babel-plugin-transform-react-ssr-try-catch",
   "version": "1.0.1",
   "description": "Wraps render() method in React.Component with try-catch statement",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "eslint": "eslint .",
     "test": "mocha"
