@@ -4,19 +4,20 @@
   "description": "Wraps render() method in React.Component with try-catch statement",
   "main": "src/index.js",
   "scripts": {
-    "eslint": "eslint .",
-    "test": "mocha"
+    "test": "npm run test:eslint && npm run test:mocha",
+    "test:mocha": "mocha",
+    "test:eslint": "eslint ."
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YandexClassifieds/babel-plugin-transform-react-ssr-try-catch.git"
+    "url": "git+https://github.com/doochik/babel-plugin-transform-react-ssr-try-catch.git"
   },
   "author": "Aleksei Androsov <aandrosov@yandex-team.ru>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/YandexClassifieds/babel-plugin-transform-react-ssr-try-catch/issues"
+    "url": "https://github.com/doochik/babel-plugin-transform-react-ssr-try-catch/issues"
   },
-  "homepage": "https://github.com/YandexClassifieds/babel-plugin-transform-react-ssr-try-catch#readme",
+  "homepage": "https://github.com/doochik/babel-plugin-transform-react-ssr-try-catch#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-plugin-syntax-jsx": "^6.18.0",
