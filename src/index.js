@@ -10,11 +10,14 @@ const tryCatchRenderAST = babylon.parse(tryCatchRender, {allowReturnOutsideFunct
 
 const createReactChecker = (t) => (node) => {
     const superClass = node.superClass;
-    return t.isMemberExpression(superClass) &&
-        t.isIdentifier(superClass.object, {name: 'React'}) &&
-        (
-            t.isIdentifier(superClass.property, {name: 'Component'}) ||
-            t.isIdentifier(superClass.property, {name: 'PureComponent'})
+    return t.isIdentifier(superClass, {name: 'Component'}) ||
+        t.isIdentifier(superClass, {name: 'PureComponent'}) ||
+        t.isMemberExpression(superClass) && (
+            t.isIdentifier(superClass.object, {name: 'React'}) &&
+            (
+                t.isIdentifier(superClass.property, {name: 'Component'}) ||
+                t.isIdentifier(superClass.property, {name: 'PureComponent'})
+            )
         );
 };
 
