@@ -19,12 +19,15 @@
   },
   "homepage": "https://github.com/doochik/babel-plugin-transform-react-ssr-try-catch#readme",
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
     "babel-plugin-syntax-jsx": "^6.18.0",
     "eslint": "^4.10.0",
     "mocha": "^4.0.1"
   },
   "engine": {
     "node": ">=6"
+  },
+  "dependencies": {
+    "babylon": "^6.18.0"
   }
 }
