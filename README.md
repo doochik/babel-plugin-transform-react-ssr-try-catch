@@ -50,7 +50,7 @@ npm install --save-dev @doochik/babel-plugin-transform-react-ssr-try-catch
 
 ## Usage
 
-**You should enable this plugin only for server build. Use React 16 error boundaries from cient build.**
+**You should enable this plugin only for server build. Use React 16 error boundaries from client build.**
 
 **.babelrc**
 
