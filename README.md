@@ -50,7 +50,7 @@ npm install --save-dev @doochik/babel-plugin-transform-react-ssr-try-catch
 
 ## Usage
 
-**You should enable this plugin only for server build. Use React 16 error boundaries from cient build.**
+**You should enable this plugin only for server build. Use React 16 error boundaries from client build.**
 
 **.babelrc**
 
@@ -58,7 +58,10 @@ npm install --save-dev @doochik/babel-plugin-transform-react-ssr-try-catch
 {
     "plugins": [
         ["react-ssr-try-catch", {
-            "errorHandler": "./path/to/my/SSRErrorHandler.js"
+            // global errorHandler
+            "errorHandler": "./path/to/my/SSRErrorHandler.js",
+            // component error render method
+            "errorRenderMethod": "renderErrorState",
         }]
     ]
 }
@@ -76,5 +79,43 @@ This is simple function with two arguments `(error, componentName)`
 
 module.exports = (error, componentName) => {
    // here you can log error and return fallback component or null.
+}
+```
+
+### `errorRenderMethod`
+
+Component method name to render error state
+Method invokes with two arguments `(error, componentName)`
+
+```js
+// original component
+
+class TestComponent extends React.PureComponent {
+    render() {
+        return <div/>;
+    }
+
+    renderErrorState() {
+        return <p>oops!</p>;
+    }
+}
+
+// component after transformation
+class TestComponent extends React.PureComponent {
+    render() {
+        try {
+            return this.__originalRenderMethod__();
+        } catch (e) {
+            return this.renderErrorState(e, this.constructor.name);
+        }
+    }
+
+    renderErrorState() {
+        return <p>oops!</p>;
+    }
+
+    __originalRenderMethod__() {
+        return <div />;
+    }
 }
 ```

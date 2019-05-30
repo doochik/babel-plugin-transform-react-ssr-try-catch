@@ -5,9 +5,6 @@ const babylon = require('babylon');
 const errorHandlerName = 'ReactSSRErrorHandler';
 const originalRenderMethodName = '__originalRenderMethod__';
 
-const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return ${ errorHandlerName }(e, this.constructor.name)}`;
-const tryCatchRenderAST = babylon.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
-
 const createReactChecker = (t) => (node) => {
     const superClass = node.superClass;
     return t.isIdentifier(superClass, {name: 'Component'}) ||
@@ -21,16 +18,49 @@ const createReactChecker = (t) => (node) => {
         );
 };
 
+const getRenderMethodWithErrorHandler = (() => {
+    const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return ${ errorHandlerName }(e, this.constructor.name)}`;
+    let tryCatchRenderAST;
+
+    return () => {
+        if (!tryCatchRenderAST) {
+            tryCatchRenderAST = babylon.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
+        }
+
+        return tryCatchRenderAST;
+    };
+})();
+
+const getRenderMethodWithErrorRenderMethod = (() => {
+    let tryCatchRenderAST;
+
+    return (errorRenderMethod) => {
+        if (!tryCatchRenderAST) {
+            const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return this.${ errorRenderMethod }(e, this.constructor.name)}`;
+            tryCatchRenderAST = babylon.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
+        }
+
+        return tryCatchRenderAST;
+    };
+})();
+
 module.exports = (_ref) => {
     const t = _ref.types;
 
     const isReactClass = createReactChecker(t);
 
     const bodyVisitor = {
-        ClassMethod: function(path) {
+        ClassMethod: function(path, state) {
+            const methodName = path.node.key.name;
+
             // finds render() method definition
-            if (path.node.key.name === 'render') {
+            if (methodName === 'render') {
                 this.renderMethod = path;
+            }
+
+            const errorRenderMethod = state.opts.errorRenderMethod;
+            if (errorRenderMethod && methodName === errorRenderMethod) {
+                this.hasErrorRenderMethod = true;
             }
         },
     };
@@ -43,8 +73,8 @@ module.exports = (_ref) => {
                         return;
                     }
 
-                    if (!state.opts.errorHandler) {
-                        throw Error('[babel-plugin-transform-react-ssr-try-catch] You must define "errorHandler" property');
+                    if (!state.opts.errorHandler && !state.opts.errorRenderMethod) {
+                        throw Error('[babel-plugin-transform-react-ssr-try-catch] You must define "errorHandler" or "errorRenderMethod" property');
                     }
 
                     const varName = t.identifier(errorHandlerName);
@@ -57,31 +87,49 @@ module.exports = (_ref) => {
                     path.unshiftContainer('body', variableDeclaration);
                 }
             },
-            Class(path, pass) {
+            Class(path, state) {
                 if (!isReactClass(path.node)) {
                     return;
                 }
 
-                const state = {
+                const opts = state.opts;
+
+                const visitorState = {
                     renderMethod: null,
+                    opts: opts,
                 };
 
-                path.traverse(bodyVisitor, state);
+                path.traverse(bodyVisitor, visitorState);
 
-                if (!state.renderMethod) {
+                if (!visitorState.renderMethod) {
                     return;
                 }
 
-                // rename original render() method
-                state.renderMethod.node.key.name = originalRenderMethodName;
-
                 // generate new render() method
-                path.get('body').unshiftContainer('body',
-                    t.classMethod('method', t.identifier('render'), [], t.blockStatement([tryCatchRenderAST]))
-                );
+                if (visitorState.hasErrorRenderMethod) {
+                    // rename original render() method
+                    visitorState.renderMethod.node.key.name = originalRenderMethodName;
 
-                // pass info for Program:exit to create "const ReactSSRErrorHandler = require('./errorHandler')"
-                pass.insertErrorHandler = true;
+                    path.get('body').unshiftContainer('body',
+                        t.classMethod(
+                            'method',
+                            t.identifier('render'),
+                            [],
+                            t.blockStatement([ getRenderMethodWithErrorRenderMethod(opts.errorRenderMethod) ])
+                        )
+                    );
+
+                } else if (opts.errorHandler) {
+                    // rename original render() method
+                    visitorState.renderMethod.node.key.name = originalRenderMethodName;
+
+                    path.get('body').unshiftContainer('body',
+                        t.classMethod('method', t.identifier('render'), [], t.blockStatement([ getRenderMethodWithErrorHandler() ]))
+                    );
+
+                    // pass info for Program:exit to create "const ReactSSRErrorHandler = require('./errorHandler')"
+                    state.insertErrorHandler = true;
+                }
             }
         }
     };

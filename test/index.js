@@ -8,17 +8,22 @@ const babel  = require('babel-core');
 describe('fixtures', () => {
     const fixturesDir = path.join(__dirname, 'fixtures');
 
-    fs.readdirSync(fixturesDir).map((caseName) => {
-        if (caseName === '.babelrc') return;
+    fs.readdirSync(fixturesDir).map((suiteName) => {
+        describe(suiteName, () => {
+            const suitePath = path.join(fixturesDir, suiteName);
+            fs.readdirSync(suitePath).map((caseName) => {
+                if (caseName === '.babelrc') return;
 
-        it(caseName.split('-').join(' '), () => {
-            const fixtureDir = path.join(fixturesDir, caseName);
-            const actual     = babel.transformFileSync(
-                path.join(fixtureDir, 'actual.js')
-            ).code;
-            const expected = fs.readFileSync(path.join(fixtureDir, 'expected.js')).toString();
+                it(caseName.split('-').join(' '), () => {
+                    const fixtureDir = path.join(suitePath, caseName);
+                    const actual     = babel.transformFileSync(
+                        path.join(fixtureDir, 'actual.js')
+                    ).code;
+                    const expected = fs.readFileSync(path.join(fixtureDir, 'expected.js')).toString();
 
-            assert.equal(trim(actual), trim(expected));
+                    assert.equal(trim(actual), trim(expected));
+                });
+            });
         });
     });
 });

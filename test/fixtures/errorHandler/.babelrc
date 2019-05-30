@@ -1,7 +1,7 @@
 {
     "plugins": [
         "syntax-jsx",
-        ["../../src/index.js", {
+        ["../../../src/index.js", {
             "errorHandler": "./path/to/my/SSRErrorHandler.js"
         }]
     ]
