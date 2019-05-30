@@ -25,7 +25,7 @@
     "mocha": "^4.0.1"
   },
   "engine": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "dependencies": {
     "babylon": "^6.18.0"
