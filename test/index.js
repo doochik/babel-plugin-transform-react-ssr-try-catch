@@ -3,7 +3,7 @@
 const path   = require('path');
 const fs     = require('fs');
 const assert = require('assert');
-const babel  = require('babel-core');
+const babel  = require('@babel/core');
 
 describe('fixtures', () => {
     const fixturesDir = path.join(__dirname, 'fixtures');

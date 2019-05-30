@@ -1,6 +1,6 @@
 {
     "plugins": [
-        "syntax-jsx",
+        "@babel/plugin-syntax-jsx",
         ["../../../src/index.js", {
             "errorRenderMethod": "ERRORBOUNDARY_render"
         }]
