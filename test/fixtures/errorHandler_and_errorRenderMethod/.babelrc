@@ -1,0 +1,9 @@
+{
+    "plugins": [
+        "syntax-jsx",
+        ["../../../src/index.js", {
+            "errorHandler": "./path/to/my/SSRErrorHandler.js",
+            "errorRenderMethod": "ERRORBOUNDARY_render"
+        }]
+    ]
+}
