@@ -1,6 +1,6 @@
 'use strict';
 
-const babylon = require('babylon');
+const babelParser = require('@babel/parser');
 
 const errorHandlerName = 'ReactSSRErrorHandler';
 const originalRenderMethodName = '__originalRenderMethod__';
@@ -24,7 +24,7 @@ const getRenderMethodWithErrorHandler = (() => {
 
     return () => {
         if (!tryCatchRenderAST) {
-            tryCatchRenderAST = babylon.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
+            tryCatchRenderAST = babelParser.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
         }
 
         return tryCatchRenderAST;
@@ -37,7 +37,7 @@ const getRenderMethodWithErrorRenderMethod = (() => {
     return (errorRenderMethod) => {
         if (!tryCatchRenderAST) {
             const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return this.${ errorRenderMethod }(e, this.constructor.name)}`;
-            tryCatchRenderAST = babylon.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
+            tryCatchRenderAST = babelParser.parse(tryCatchRender, {allowReturnOutsideFunction: true}).program.body[0];
         }
 
         return tryCatchRenderAST;
