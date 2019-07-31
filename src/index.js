@@ -19,7 +19,7 @@ const createReactChecker = (t) => (node) => {
 };
 
 const getRenderMethodWithErrorHandler = (() => {
-    const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return ${ errorHandlerName }(e, this.constructor.name)}`;
+    const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return ${ errorHandlerName }(e, this.constructor.name, this)}`;
     let tryCatchRenderAST;
 
     return () => {
