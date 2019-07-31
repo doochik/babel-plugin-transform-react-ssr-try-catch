@@ -1,6 +1,6 @@
 {
   "name": "@doochik/babel-plugin-transform-react-ssr-try-catch",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Wraps render() method in React.Component with try-catch statement",
   "main": "src/index.js",
   "scripts": {
