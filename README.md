@@ -8,7 +8,7 @@ Babel plugin to wrap render() method in React.Component with try-catch statement
 
 React 16 has [error handling](https://reactjs.org/blog/2017/09/26/react-v16.0.html#better-error-handling) but for [client rendering only](https://github.com/facebook/react/issues/10442). 
 
-This plugin performs simple transform which wraps event render() method with try-catch.
+This plugin performs simple transform which wraps every render() method with try-catch.
 Example:
 ```js
 // MyComponent.js
