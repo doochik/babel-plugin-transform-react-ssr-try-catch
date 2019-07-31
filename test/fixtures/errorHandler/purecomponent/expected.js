@@ -9,7 +9,7 @@ class TestComponent extends PureComponent {
     try {
       return this.__originalRenderMethod__();
     } catch (e) {
-      return ReactSSRErrorHandler(e, this.constructor.name);
+      return ReactSSRErrorHandler(e, this.constructor.name, this);
     }
   }
 
