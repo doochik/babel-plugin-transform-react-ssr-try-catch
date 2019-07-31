@@ -30,7 +30,7 @@ class MyCompoenent extends React.PureComponent {
       try {
           return this.__originalRenderMethod__();
       } catch (e) {
-          return ReactSSRErrorHandler(e, this.constructor.name);
+          return ReactSSRErrorHandler(e, this.constructor.name, this);
       }
   }
 
@@ -72,12 +72,12 @@ npm install --save-dev @doochik/babel-plugin-transform-react-ssr-try-catch
 ### `errorHandler`
 
 Path to your errorHandler module.
-This is simple function with two arguments `(error, componentName)`
+This is simple function with three arguments `(error, componentName, componentContext)`
 
 ```js
 // SSRErrorHandler.js
 
-module.exports = (error, componentName) => {
+module.exports = (error, componentName, componentContext) => {
    // here you can log error and return fallback component or null.
 }
 ```
