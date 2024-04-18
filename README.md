@@ -62,12 +62,18 @@ npm install --save-dev @doochik/babel-plugin-transform-react-ssr-try-catch
             "errorHandler": "./path/to/my/SSRErrorHandler.js",
             // component error render method
             "errorRenderMethod": "renderErrorState",
+            "type": "module"
         }]
     ]
 }
 ```
 
 ## Options
+
+### `type`
+
+To generate ESM imports add option `type='module'`
+
 
 ### `errorHandler`
 
