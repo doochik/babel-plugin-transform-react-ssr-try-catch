@@ -77,14 +77,20 @@ module.exports = (_ref) => {
                         throw Error('[babel-plugin-transform-react-ssr-try-catch] You must define "errorHandler" or "errorRenderMethod" property');
                     }
 
-                    const varName = t.identifier(errorHandlerName);
-                    const variableDeclaration = t.variableDeclaration('const', [
-                        t.variableDeclarator(
-                            varName,
-                            t.callExpression(t.identifier('require'), [t.stringLiteral(state.opts.errorHandler)])
-                        )
-                    ]);
-                    path.unshiftContainer('body', variableDeclaration);
+                    if (state.opts.type !== 'module') {
+                        const varName = t.identifier(errorHandlerName);
+                        const variableDeclaration = t.variableDeclaration('const', [
+                            t.variableDeclarator(
+                                varName,
+                                t.callExpression(t.identifier('require'), [t.stringLiteral(state.opts.errorHandler)])
+                            )
+                        ]);
+                        path.unshiftContainer('body', variableDeclaration);
+                    } else {
+                        const importName = t.identifier(errorHandlerName);
+                        const importDeclaration = t.importDeclaration([t.importDefaultSpecifier(importName)], t.stringLiteral(state.opts.errorHandler));
+                        path.unshiftContainer('body', importDeclaration);
+                    }
                 }
             },
             Class(path, state) {
