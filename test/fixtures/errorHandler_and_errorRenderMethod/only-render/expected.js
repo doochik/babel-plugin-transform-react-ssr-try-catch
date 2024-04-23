@@ -1,7 +1,5 @@
 const ReactSSRErrorHandler = require("./path/to/my/SSRErrorHandler.js");
-
 const React = require('react');
-
 class TestComponent extends React.PureComponent {
   render() {
     try {
@@ -10,11 +8,8 @@ class TestComponent extends React.PureComponent {
       return ReactSSRErrorHandler(e, this.constructor.name, this);
     }
   }
-
   __originalRenderMethod__() {
     return <div />;
   }
-
 }
-
 module.exports = TestComponent;
