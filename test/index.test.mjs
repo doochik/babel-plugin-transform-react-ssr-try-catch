@@ -15,7 +15,7 @@ describe('fixtures', () => {
                 it(caseName.split('-').join(' '), () => {
                     const fixtureDir = join(suitePath, caseName);
                     const actual     = transformFileSync(
-                        join(fixtureDir, 'actual.js')
+                        join(fixtureDir, 'actual.js'),
                     ).code;
                     const expected = readFileSync(join(fixtureDir, 'expected.js')).toString();
 
@@ -25,7 +25,3 @@ describe('fixtures', () => {
         });
     });
 });
-
-function trim(str) {
-    return str.replace(/^\s+|\s+$/, '');
-}
