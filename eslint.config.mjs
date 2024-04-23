@@ -24,6 +24,7 @@ export default [
             '@stylistic/js/quotes': [ 'error', 'single', {
                 allowTemplateLiterals: true,
             } ],
+            '@stylistic/js/semi': [ 'error', 'always' ],
         },
     },
     {
