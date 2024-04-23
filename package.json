@@ -4,7 +4,7 @@
   "description": "Wraps render() method in React.Component with try-catch statement",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "vitest",
     "eslint": "eslint ."
   },
   "files": [
@@ -24,7 +24,7 @@
     "@babel/core": "^7.24.4",
     "@babel/plugin-syntax-jsx": "^7.24.1",
     "eslint": "^5.16.0",
-    "mocha": "^10.4.0"
+    "vitest": "^1.5.0"
   },
   "engine": {
     "node": ">=8"
