@@ -1,56 +1,26 @@
 'use strict';
 
-const babelParser = require('@babel/parser');
-
-const errorHandlerName = 'ReactSSRErrorHandler';
-const originalRenderMethodName = '__originalRenderMethod__';
-
-const createReactChecker = (t) => (node) => {
-    const superClass = node.superClass;
-    return t.isIdentifier(superClass, { name: 'Component' }) ||
-        t.isIdentifier(superClass, { name: 'PureComponent' }) ||
-        t.isMemberExpression(superClass) && (
-            t.isIdentifier(superClass.object, { name: 'React' }) &&
-            (
-                t.isIdentifier(superClass.property, { name: 'Component' }) ||
-                t.isIdentifier(superClass.property, { name: 'PureComponent' })
-            )
-        );
-};
-
-const getRenderMethodWithErrorHandler = (() => {
-    const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return ${ errorHandlerName }(e, this.constructor.name, this)}`;
-    let tryCatchRenderAST;
-
-    return () => {
-        if (!tryCatchRenderAST) {
-            tryCatchRenderAST = babelParser.parse(tryCatchRender, { allowReturnOutsideFunction: true }).program.body[0];
-        }
-
-        return tryCatchRenderAST;
-    };
-})();
-
-const getRenderMethodWithErrorRenderMethod = (() => {
-    let tryCatchRenderAST;
-
-    return (errorRenderMethod) => {
-        if (!tryCatchRenderAST) {
-            const tryCatchRender = `try{return this.__originalRenderMethod__();}catch(e){return this.${ errorRenderMethod }(e, this.constructor.name)}`;
-            tryCatchRenderAST = babelParser.parse(tryCatchRender, { allowReturnOutsideFunction: true }).program.body[0];
-        }
-
-        return tryCatchRenderAST;
-    };
-})();
-
 module.exports = (_ref) => {
     const t = _ref.types;
 
-    const isReactClass = createReactChecker(t);
+    const errorHandlerName = 'ReactSSRErrorHandler';
+    const originalRenderMethodName = '__originalRenderMethod__';
+
+    const isReactClass = (t) => (node) => {
+        const superClass = node.superClass;
+        return t.isIdentifier(superClass, { name: 'Component' }) ||
+            t.isIdentifier(superClass, { name: 'PureComponent' }) ||
+            t.isMemberExpression(superClass) && (
+                t.isIdentifier(superClass.object, { name: 'React' }) &&
+                (
+                    t.isIdentifier(superClass.property, { name: 'Component' }) ||
+                    t.isIdentifier(superClass.property, { name: 'PureComponent' })
+                )
+            );
+    };
 
     const bodyVisitor = {
-        ClassMethod: function(path, state) {
+        ClassMethod: function (path, state) {
             const methodName = path.node.key.name;
 
             // finds render() method definition
@@ -121,7 +91,28 @@ module.exports = (_ref) => {
                             'method',
                             t.identifier('render'),
                             [],
-                            t.blockStatement([ getRenderMethodWithErrorRenderMethod(opts.errorRenderMethod) ]),
+                            t.blockStatement([
+                                t.tryStatement(
+                                    t.blockStatement([
+                                        t.returnStatement(t.callExpression(
+                                            t.memberExpression(t.thisExpression(), t.identifier('__originalRenderMethod__')),
+                                            [],
+                                        )),
+                                    ]),
+                                    t.catchClause(t.identifier('e'), t.blockStatement([
+                                        t.returnStatement(t.callExpression(
+                                            t.memberExpression(t.thisExpression(), t.identifier(opts.errorRenderMethod)),
+                                            [
+                                                t.identifier('e'),
+                                                t.memberExpression(
+                                                    t.memberExpression(t.thisExpression(), t.identifier('constructor')),
+                                                    t.identifier('name'),
+                                                ),
+                                            ],
+                                        )),
+                                    ])),
+                                ),
+                            ]),
                         ),
                     );
 
@@ -130,7 +121,29 @@ module.exports = (_ref) => {
                     visitorState.renderMethod.node.key.name = originalRenderMethodName;
 
                     path.get('body').unshiftContainer('body',
-                        t.classMethod('method', t.identifier('render'), [], t.blockStatement([ getRenderMethodWithErrorHandler() ])),
+                        t.classMethod('method', t.identifier('render'), [], t.blockStatement([
+                            t.tryStatement(
+                                t.blockStatement([
+                                    t.returnStatement(t.callExpression(
+                                        t.memberExpression(t.thisExpression(), t.identifier('__originalRenderMethod__')),
+                                        [],
+                                    )),
+                                ]),
+                                t.catchClause(t.identifier('e'), t.blockStatement([
+                                    t.returnStatement(t.callExpression(
+                                        t.identifier('ReactSSRErrorHandler'),
+                                        [
+                                            t.identifier('e'),
+                                            t.memberExpression(
+                                                t.memberExpression(t.thisExpression(), t.identifier('constructor')),
+                                                t.identifier('name'),
+                                            ),
+                                            t.thisExpression(),
+                                        ],
+                                    )),
+                                ])),
+                            ),
+                        ])),
                     );
 
                     // pass info for Program:exit to create "const ReactSSRErrorHandler = require('./errorHandler')"
