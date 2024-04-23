@@ -1,6 +1,5 @@
 import ReactSSRErrorHandler from "./path/to/my/SSRErrorHandler.js";
 import { Component } from 'react';
-
 class TestComponent extends Component {
   render() {
     try {
@@ -9,11 +8,8 @@ class TestComponent extends Component {
       return ReactSSRErrorHandler(e, this.constructor.name, this);
     }
   }
-
   __originalRenderMethod__() {
     return <div />;
   }
-
 }
-
 export default TestComponent;
