@@ -1,8 +1,18 @@
-class TestComponent extends SomeOtherComponent {
+const React = require('react');
 
+class TestComponent extends React.PureComponent {
     render() {
-        return <div/>;
+        return <span/>;
     }
 }
 
-module.exports = TestComponent;
+class TestExtendsComponent extends TestComponent {
+
+    render() {
+        return (
+            <div>{super.render()}</div>
+        );
+    }
+}
+
+module.exports = TestExtendsComponent;
