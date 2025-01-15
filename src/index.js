@@ -6,7 +6,7 @@ module.exports = (_ref) => {
     const errorHandlerName = 'ReactSSRErrorHandler';
     const originalRenderMethodName = '__originalRenderMethod__';
 
-    const isReactClass = (t) => (node) => {
+    const isReactClass = (node) => {
         const superClass = node.superClass;
         return t.isIdentifier(superClass, { name: 'Component' }) ||
             t.isIdentifier(superClass, { name: 'PureComponent' }) ||
