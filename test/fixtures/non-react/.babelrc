@@ -1,0 +1,8 @@
+{
+    "plugins": [
+        "@babel/plugin-syntax-jsx",
+        ["../../../src/index.js", {
+            "errorHandler": "./path/to/my/SSRErrorHandler.js"
+        }]
+    ]
+}
