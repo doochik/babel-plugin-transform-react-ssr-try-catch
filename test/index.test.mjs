@@ -12,8 +12,6 @@ describe('fixtures', () => {
             readdirSync(suitePath).map((caseName, i) => {
                 if (caseName === '.babelrc') return;
 
-                if (i > 1) return;
-
                 it(caseName.split('-').join(' '), () => {
                     const fixtureDir = join(suitePath, caseName);
                     const actual     = transformFileSync(
