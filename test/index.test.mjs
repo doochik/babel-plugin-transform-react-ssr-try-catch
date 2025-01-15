@@ -9,7 +9,7 @@ describe('fixtures', () => {
     readdirSync(fixturesDir).map((suiteName) => {
         describe(suiteName, () => {
             const suitePath = join(fixturesDir, suiteName);
-            readdirSync(suitePath).map((caseName, i) => {
+            readdirSync(suitePath).map((caseName) => {
                 if (caseName === '.babelrc') return;
 
                 it(caseName.split('-').join(' '), () => {
